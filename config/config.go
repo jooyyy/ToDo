@@ -7,17 +7,19 @@ import (
 )
 
 var Config DevConfig
+
 type DevConfig struct {
-	HTTPS bool `default:"false" env:"HTTPS"`
-	Port  uint `default:"7005" env:"PORT"`
+	HTTPS bool `default:"false" env:"HTTPS" json:"https"`
+	Port  uint `default:"7005" env:"PORT" json:"port"`
 	Database    struct {
-		Name     string `env:"DBName" default:"qor_example"`
-		Adapter  string `env:"DBAdapter" default:"mysql"`
-		Host     string `env:"DBHost" default:"localhost"`
-		Port     string `env:"DBPort" default:"3306"`
-		User     string `env:"DBUser"`
-		Password string `env:"DBPassword"`
-	}
+		Default   struct {
+			Host  	string `json:"host"`
+			Port     string `json:"port"`
+			User     string `json:"user"`
+			Pwd 	 string `json:"pwd"`
+			Name 	 string `json:"name"`
+		} `json:"default"`
+	} `json:"database"`
 }
 
 func init() {

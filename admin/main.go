@@ -1,6 +1,13 @@
 package main
 
 import (
+	_ "github.com/GoAdminGroup/go-admin/adapter/gin" // web framework adapter
+	"github.com/GoAdminGroup/go-admin/engine"
+	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql" // sql driver
+	"github.com/GoAdminGroup/go-admin/template"
+	"github.com/GoAdminGroup/go-admin/template/chartjs"
+	_ "github.com/GoAdminGroup/themes/sword" // ui theme
+	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"
 	"os"
@@ -8,15 +15,7 @@ import (
 	"todo/admin/models"
 	"todo/admin/pages"
 	"todo/admin/tables"
-
-	_ "github.com/GoAdminGroup/go-admin/adapter/gin"              // web framework adapter
-	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql" // sql driver
-	_ "github.com/GoAdminGroup/themes/sword"                      // ui theme
-
-	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/go-admin/template"
-	"github.com/GoAdminGroup/go-admin/template/chartjs"
-	"github.com/gin-gonic/gin"
+	"todo/storage/mysql"
 )
 
 func main() {
@@ -47,6 +46,8 @@ func startServer() {
 	})
 
 	models.Init(eng.MysqlConnection())
+
+	mysql.InitMysql()
 
 	_ = r.Run(":80")
 

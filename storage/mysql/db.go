@@ -16,11 +16,11 @@ func InitMysql() {
 	var err error
 	DB, err = gorm.Open("mysql",
 		fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?parseTime=True&loc=Local",
-			Config.Database.User,
-			Config.Database.Password,
-			Config.Database.Host,
-			Config.Database.Port,
-			Config.Database.Name))
+			Config.Database.Default.User,
+			Config.Database.Default.Pwd,
+			Config.Database.Default.Host,
+			Config.Database.Default.Port,
+			Config.Database.Default.Name))
 	if err != nil {
 		panic(err)
 	}
