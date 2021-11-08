@@ -30,17 +30,10 @@ func GetTaskTable(ctx *context.Context) (t table.Table) {
 	}), "")
 	info.AddField("ID", "id", db.Int).FieldSortable().FieldHide()
 	info.AddField("Date", "date", db.Varchar)
-	info.AddField("Status", "status", db.Varchar).FieldEditAble(editType.Select).FieldEditOptions(taskStatusOpts).FieldDisplay(func(value types.FieldModel) interface{} {
-		switch value.Value {
-		case model.TaskStatusPause:
-			return "暂停"
-		case model.TaskStatusDoing:
-			return "进行中"
-		case model.TaskStatusDone:
-			return "结束"
-		default:
-			return "未知状态"
-		}
+	info.AddField("Project", "name", db.Varchar).FieldJoin(types.Join{
+		Table:     "projects",
+		Field:     "project_id",
+		JoinField: "id",
 	})
 	info.AddField("Name", "name", db.Varchar).
 		FieldFilterable(types.FilterType{Operator: types.FilterOperatorLike})
@@ -61,6 +54,18 @@ func GetTaskTable(ctx *context.Context) (t table.Table) {
 		}
 		return fmt.Sprintf("%.1f", totalDuration.Hours())
 	})
+	info.AddField("Status", "status", db.Varchar).FieldEditAble(editType.Select).FieldEditOptions(taskStatusOpts).FieldDisplay(func(value types.FieldModel) interface{} {
+		switch value.Value {
+		case model.TaskStatusPause:
+			return "暂停"
+		case model.TaskStatusDoing:
+			return "进行中"
+		case model.TaskStatusDone:
+			return "结束"
+		default:
+			return "未知状态"
+		}
+	})
 	info.SetTable("tasks").SetTitle("Tasks Manager").SetDescription("")
 
 	formList := t.GetForm()
@@ -78,7 +83,7 @@ func GetTaskTable(ctx *context.Context) (t table.Table) {
 	formList.AddField("Description", "description", db.Text, form.TextArea)
 	formList.AddField("Duration", "durations", db.Text, form.TextArea).FieldDefault("[]")
 	formList.SetTable("tasks").SetTitle("Tasks Manager").SetDescription("")
-	formList.SetPreProcessFn(updateFunc())
+	formList.SetPreProcessFn(preProcessFunc())
 
 	return
 }
@@ -111,7 +116,7 @@ func getProjectsOptions() types.FieldOptions {
 	return out
 }
 
-func updateFunc() types.FormPreProcessFn {
+func preProcessFunc() types.FormPreProcessFn {
 	return func(values form2.Values) form2.Values {
 		now := time.Now().Format("2006-01-02 15:04:05")
 

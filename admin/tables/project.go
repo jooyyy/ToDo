@@ -32,6 +32,7 @@ func GetProjectTable(ctx *context.Context) (t table.Table) {
 			}
 			err = exportExel(id)
 			if err != nil {
+				fmt.Println("debug joy", err.Error())
 				return false, "导出失败：" + err.Error(), err.Error
 			}
 			return true, "导出成功", ""
