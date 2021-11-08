@@ -49,7 +49,7 @@ func startServer() {
 
 	mysql.InitMysql()
 
-	err := r.Run(":80")
+	err := r.Run(":20080")
 	if err != nil {
 		panic(err)
 	}
