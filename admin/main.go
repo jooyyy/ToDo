@@ -49,7 +49,10 @@ func startServer() {
 
 	mysql.InitMysql()
 
-	_ = r.Run(":80")
+	err := r.Run(":80")
+	if err != nil {
+		panic(err)
+	}
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt)
