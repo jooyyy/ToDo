@@ -53,8 +53,6 @@ func exportExel(projectId int64) error {
 	if now.Day() < 10 {
 		month = now.Add(-10 * time.Hour * 24).Format("2006-01")
 	}
-	// TODO tmp
-	month = "2021-10"
 	var tasks []model.Task
 	err := mysql.DB.Where("project_id = ?", projectId).
 		Where("date < ? and date > ?", month + "-31", month).
