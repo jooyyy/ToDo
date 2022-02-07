@@ -3,10 +3,12 @@ module todo
 go 1.16
 
 require (
+	github.com/GoAdminGroup/components v0.0.2
 	github.com/GoAdminGroup/go-admin v1.2.23
 	github.com/GoAdminGroup/themes v0.0.43
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/buaazp/fasthttprouter v0.1.1 // indirect
+	github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f // indirect
 	github.com/fasthttp-contrib/websocket v0.0.0-20160511215533-1f3b11f56072 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/gavv/httpexpect v2.0.0+incompatible

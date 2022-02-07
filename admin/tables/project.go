@@ -1,6 +1,7 @@
 package tables
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/GoAdminGroup/go-admin/context"
@@ -30,7 +31,7 @@ func GetProjectTable(ctx *context.Context) (t table.Table) {
 			if err != nil {
 				return false, "导出失败", err.Error
 			}
-			err = exportExel(id)
+			err = exportExel(ctx, id)
 			if err != nil {
 				fmt.Println("debug joy", err.Error())
 				return false, "导出失败：" + err.Error(), err.Error
@@ -38,6 +39,7 @@ func GetProjectTable(ctx *context.Context) (t table.Table) {
 			return true, "导出成功", ""
 		}))
 	info.SetTable("projects").SetTitle("Projects Manager").SetDescription("")
+	info.HideExportButton()
 
 	formList := t.GetForm()
 	formList.AddField("ID", "id", db.Int, form.Default).FieldHide()
@@ -47,7 +49,7 @@ func GetProjectTable(ctx *context.Context) (t table.Table) {
 	return
 }
 
-func exportExel(projectId int64) error {
+func exportExel(ctx *context.Context, projectId int64) error {
 	now := time.Now()
 	month := now.Format("2006-01")
 	if now.Day() < 10 {
@@ -102,5 +104,13 @@ func exportExel(projectId int64) error {
 	amountRow.AddCell()
 	amountRow.AddCell().Value = fmt.Sprintf("%.1f", totalDuration.Hours())
 
-	return outputFile.Save(fmt.Sprintf("joy - %s 工时.xlsx", month))
+	buf := new(bytes.Buffer)
+	err = outputFile.Write(buf)
+	if err != nil {
+		return err
+	}
+	fileName := fmt.Sprintf("joy - %s 工时.xlsx", month)
+	ctx.AddHeader("content-disposition", `attachment; filename=`+fileName)
+	ctx.Data(200, "application/vnd.ms-excel", buf.Bytes())
+	return nil
 }
