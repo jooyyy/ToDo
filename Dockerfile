@@ -4,8 +4,9 @@ COPY ./bin/todo .
 COPY config.json .
 
 # set timezone to +8.0
-RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-RUN echo 'Asia/Shanghai' >/etc/timezone
+RUN apk add tzdata && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone \
+    && apk del tzdata
 
 ENTRYPOINT ["./todo"]
 
