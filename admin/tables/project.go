@@ -11,6 +11,7 @@ import (
 	"github.com/GoAdminGroup/go-admin/template/types/action"
 	"github.com/GoAdminGroup/go-admin/template/types/form"
 	"github.com/tealeg/xlsx"
+	"os"
 	"strconv"
 	"time"
 	"todo/model"
@@ -110,7 +111,6 @@ func exportExel(ctx *context.Context, projectId int64) error {
 		return err
 	}
 	fileName := fmt.Sprintf("joy - %s 工时.xlsx", month)
-	ctx.AddHeader("content-disposition", `attachment; filename=`+fileName)
-	ctx.Data(200, "application/vnd.ms-excel", buf.Bytes())
-	return nil
+	os.Mkdir("/usr/share/ToDo", os.FileMode(0755))
+	return outputFile.Save("/usr/share/ToDo/" + fileName)
 }
