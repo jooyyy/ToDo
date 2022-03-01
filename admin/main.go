@@ -3,6 +3,7 @@ package main
 import (
 	_ "github.com/GoAdminGroup/go-admin/adapter/gin" // web framework adapter
 	"github.com/GoAdminGroup/go-admin/engine"
+	"github.com/GoAdminGroup/filemanager"
 	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql" // sql driver
 	"github.com/GoAdminGroup/go-admin/template"
 	"github.com/GoAdminGroup/go-admin/template/chartjs"
@@ -12,6 +13,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"todo/admin/models"
 	"todo/admin/pages"
 	"todo/admin/tables"
@@ -32,8 +34,14 @@ func startServer() {
 
 	eng := engine.Default()
 
+	dir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
 	if err := eng.AddConfigFromJSON("./config.json").
 		AddGenerators(tables.Generators).
+		AddPlugins(filemanager.NewFileManager(filepath.Join(dir, "files"))).
 		Use(r); err != nil {
 		panic(err)
 	}
@@ -49,7 +57,7 @@ func startServer() {
 
 	mysql.InitMysql()
 
-	err := r.Run(":20080")
+	err = r.Run(":20080")
 	if err != nil {
 		panic(err)
 	}

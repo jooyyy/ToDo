@@ -12,6 +12,7 @@ import (
 	"github.com/GoAdminGroup/go-admin/template/types/form"
 	"github.com/tealeg/xlsx"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 	"todo/model"
@@ -26,7 +27,7 @@ func GetProjectTable(ctx *context.Context) (t table.Table) {
 	info.AddField("ID", "id", db.Int).FieldSortable().FieldHide()
 	info.AddField("Name", "name", db.Varchar).
 		FieldFilterable(types.FilterType{Operator:types.FilterOperatorLike})
-	info.AddActionButton("导出表格", action.Ajax("/admin/audit",
+	info.AddActionButton("导出表格", action.Ajax("/admin/export",
 		func(ctx *context.Context) (success bool, msg string, data interface{}) {
 			id, err := strconv.ParseInt(ctx.PostForm().Get("id"), 10, 64)
 			if err != nil {
@@ -34,7 +35,6 @@ func GetProjectTable(ctx *context.Context) (t table.Table) {
 			}
 			err = exportExel(ctx, id)
 			if err != nil {
-				fmt.Println("debug joy", err.Error())
 				return false, "导出失败：" + err.Error(), err.Error
 			}
 			return true, "导出成功", ""
@@ -111,6 +111,9 @@ func exportExel(ctx *context.Context, projectId int64) error {
 		return err
 	}
 	fileName := fmt.Sprintf("joy - %s 工时.xlsx", month)
-	os.Mkdir("/usr/share/ToDo", os.FileMode(0755))
-	return outputFile.Save("/usr/share/ToDo/" + fileName)
+	dir, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+	return outputFile.Save(filepath.Join(dir, fileName))
 }
