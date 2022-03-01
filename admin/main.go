@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/GoAdminGroup/filemanager"
 	_ "github.com/GoAdminGroup/go-admin/adapter/gin" // web framework adapter
 	"github.com/GoAdminGroup/go-admin/engine"
-	"github.com/GoAdminGroup/filemanager"
 	_ "github.com/GoAdminGroup/go-admin/modules/db/drivers/mysql" // sql driver
 	"github.com/GoAdminGroup/go-admin/template"
 	"github.com/GoAdminGroup/go-admin/template/chartjs"
@@ -38,6 +38,8 @@ func startServer() {
 	if err != nil {
 		panic(err)
 	}
+
+	os.Mkdir(dir, os.FileMode(0755))
 
 	if err := eng.AddConfigFromJSON("./config.json").
 		AddGenerators(tables.Generators).
