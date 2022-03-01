@@ -39,7 +39,10 @@ func startServer() {
 		panic(err)
 	}
 
-	os.Mkdir(dir, os.FileMode(0755))
+	err = os.Mkdir(filepath.Join(dir, "files"), os.FileMode(0755))
+	if err != nil {
+		panic(err)
+	}
 
 	if err := eng.AddConfigFromJSON("./config.json").
 		AddGenerators(tables.Generators).

@@ -115,5 +115,5 @@ func exportExel(ctx *context.Context, projectId int64) error {
 	if err != nil {
 		return err
 	}
-	return outputFile.Save(filepath.Join(dir, fileName))
+	return outputFile.Save(filepath.Join(dir, "files", fileName))
 }
